@@ -2,7 +2,14 @@ import { Injectable } from '@angular/core';
 import { Article, NewArticle } from '../interfaces/article';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { delay, lastValueFrom, catchError, switchMap, timer } from 'rxjs';
+import {
+  delay,
+  lastValueFrom,
+  catchError,
+  switchMap,
+  timer,
+  Observable,
+} from 'rxjs';
 
 const url = environment.apiDomain + '/api/articles';
 
@@ -15,7 +22,7 @@ export class ArticleService {
 
   constructor(private http: HttpClient) {}
 
-  async add(newArticle: NewArticle) {
+  async add(newArticle: NewArticle): Promise<void> {
     await lastValueFrom(
       this.http.post<void>(url, newArticle).pipe(
         catchError((err) => {
@@ -23,6 +30,15 @@ export class ArticleService {
           throw new Error('Technical error');
         })
       )
+    );
+  }
+
+  add$(newArticle: NewArticle): Observable<void> {
+    return this.http.post<void>(url, newArticle).pipe(
+      catchError((err) => {
+        console.log('err: ', err);
+        throw new Error('Technical error');
+      })
     );
   }
 

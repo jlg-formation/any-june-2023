@@ -60,11 +60,12 @@ describe('ListComponent', () => {
   it('should select', () => {
     component.selectedArticles = new Set([]);
     component.select(a1);
+    expect(component.selectedArticles.has(a1)).toBeTrue();
     expect(component).toBeTruthy();
   });
   it('should unselect', () => {
     component.selectedArticles = new Set([a1]);
     component.select(a1);
-    expect(component).toBeTruthy();
+    expect(component.selectedArticles.has(a1)).toBeFalse();
   });
 });

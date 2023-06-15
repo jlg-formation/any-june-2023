@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { faCircleNotch, faPlus } from '@fortawesome/free-solid-svg-icons';
-import { lastValueFrom, timer } from 'rxjs';
+import { catchError, finalize, of, switchMap } from 'rxjs';
 import { NewArticle } from 'src/app/interfaces/article';
 import { ArticleService } from 'src/app/services/article.service';
 
@@ -11,7 +11,7 @@ import { ArticleService } from 'src/app/services/article.service';
   templateUrl: './create.component.html',
   styleUrls: ['./create.component.scss'],
 })
-export class CreateComponent implements OnInit {
+export class CreateComponent {
   errorMsg = '';
   f = new FormGroup({
     name: new FormControl('Truc', [Validators.required]),
@@ -28,22 +28,30 @@ export class CreateComponent implements OnInit {
     private route: ActivatedRoute
   ) {}
 
-  ngOnInit(): void {}
-
-  async submit() {
-    try {
-      this.isAdding = true;
-      await lastValueFrom(timer(1000));
-      await this.articleService.add(this.f.value as NewArticle);
-      await this.articleService.load();
-      await this.router.navigate(['..'], { relativeTo: this.route });
-    } catch (err) {
-      console.log('err: ', err);
-      if (err instanceof Error) {
-        this.errorMsg = err.message;
-      }
-    } finally {
-      this.isAdding = false;
-    }
+  submit() {
+    of(undefined)
+      .pipe(
+        switchMap(() => {
+          this.isAdding = true;
+          return this.articleService.add$(this.f.value as NewArticle);
+        }),
+        switchMap(() => {
+          return this.articleService.load();
+        }),
+        switchMap(() => {
+          return this.router.navigate(['..'], { relativeTo: this.route });
+        }),
+        catchError((err) => {
+          console.log('err: ', err);
+          if (err instanceof Error) {
+            this.errorMsg = err.message;
+          }
+          return of(undefined);
+        }),
+        finalize(() => {
+          this.isAdding = false;
+        })
+      )
+      .subscribe();
   }
 }

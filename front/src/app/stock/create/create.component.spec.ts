@@ -5,6 +5,7 @@ import { ArticleService } from 'src/app/services/article.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of, throwError } from 'rxjs';
+import { WidgetsModule } from 'src/app/widgets/widgets.module';
 
 describe('CreateComponent', () => {
   let component: CreateComponent;
@@ -12,7 +13,7 @@ describe('CreateComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule],
+      imports: [HttpClientTestingModule, RouterTestingModule, WidgetsModule],
       providers: [ArticleService],
       declarations: [CreateComponent],
     }).compileComponents();

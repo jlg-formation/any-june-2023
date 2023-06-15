@@ -12,7 +12,7 @@ import {
 import { environment } from 'src/environments/environment';
 import { Article, NewArticle } from '../interfaces/article';
 
-const url = environment.apiDomain + '/api/articles';
+export const url = environment.apiDomain + '/api/articles';
 
 @Injectable({
   providedIn: 'root',

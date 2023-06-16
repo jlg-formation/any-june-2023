@@ -18,6 +18,16 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use((req, res, next) => {
+  const auth = req.get("Authorization");
+  const token = auth?.substring("Bearer ".length);
+  if (token === "123soleil") {
+    next();
+    return;
+  }
+  res.status(401).end();
+});
+
 app.get("/articles", (req, res) => {
   res.json(articles);
 });

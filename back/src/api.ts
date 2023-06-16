@@ -48,4 +48,11 @@ app.delete("/articles", (req, res) => {
   res.status(204).end();
 });
 
+app.post("/check", (req, res) => {
+  const body: { value: string } = req.body;
+  console.log("value: ", body.value);
+  const result = body.value !== "XXX";
+  res.json({ result });
+});
+
 export const api = app;

@@ -5,16 +5,22 @@
       <span>Nom</span>
       <input type="text" formControlName="name" appAutofocus />
       <span class="error">
+        <span *ngIf="f.controls['name'].errors?.['duplicate']">
+          Duplicate
+        </span>
         <span *ngIf="f.controls['name'].invalid && f.controls['name'].touched">
           <span *ngIf="f.controls['name'].errors?.['required']">
             Champ Requis
           </span>
           <span *ngIf="f.controls['name'].errors?.['maxlength']">
             Trop long
-            {{ f.controls['name'].errors?.['maxlength'].actualLength
+            {{f.controls['name']            .errors?.['maxlength'].actualLength
+
+
 
 
             }}/{{ f.controls['name'].errors?.['maxlength'].requiredLength
+
 
 
             }}max

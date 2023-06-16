@@ -23,10 +23,12 @@ export class DuplicateService implements AsyncValidator {
       switchMap(() => {
         console.log('start deb', control.value);
         console.log('this.http: ', this);
-        return this.http.post<{ result: boolean }>('/api/check', control.value);
+        return this.http.post<{ result: boolean }>('/api/check', {
+          value: control.value,
+        });
       }),
       map((output: { result: boolean }) => {
-        console.log('start async validate service');
+        console.log('start async validate service', output);
 
         if (output.result === false) {
           return {

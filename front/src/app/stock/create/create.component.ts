@@ -5,6 +5,7 @@ import { faCircleNotch, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { catchError, finalize, of, switchMap } from 'rxjs';
 import { NewArticle } from 'src/app/interfaces/article';
 import { ArticleService } from 'src/app/services/article.service';
+import { DuplicateService } from 'src/app/validators/duplicate.service';
 
 @Component({
   selector: 'app-create',
@@ -17,7 +18,7 @@ export class CreateComponent {
     name: new FormControl(
       '',
       [Validators.required, Validators.maxLength(10)],
-      []
+      [this.duplicateService.validate.bind(this.duplicateService)]
     ),
     price: new FormControl(0, [Validators.required]),
     qty: new FormControl(1, [Validators.required]),
@@ -29,7 +30,8 @@ export class CreateComponent {
   constructor(
     private articleService: ArticleService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private duplicateService: DuplicateService
   ) {}
 
   submit() {

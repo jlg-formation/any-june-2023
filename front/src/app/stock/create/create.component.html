@@ -4,6 +4,23 @@
     <label>
       <span>Nom</span>
       <input type="text" formControlName="name" appAutofocus />
+      <span class="error">
+        <span *ngIf="f.controls['name'].invalid && f.controls['name'].touched">
+          <span *ngIf="f.controls['name'].errors?.['required']">
+            Champ Requis
+          </span>
+          <span *ngIf="f.controls['name'].errors?.['maxlength']">
+            Trop long
+            {{ f.controls['name'].errors?.['maxlength'].actualLength
+
+
+            }}/{{ f.controls['name'].errors?.['maxlength'].requiredLength
+
+
+            }}max
+          </span>
+        </span>
+      </span>
     </label>
     <label>
       <span>Prix</span>
@@ -17,7 +34,7 @@
       <span *ngIf="errorMsg">Erreur : {{ errorMsg }}</span>
     </div>
     <div class="buttons">
-      <button class="primary" [disabled]="isAdding">
+      <button class="primary" [disabled]="isAdding || f.invalid">
         <fa-icon
           [icon]="isAdding ? faCircleNotch : faPlus"
           [spin]="isAdding"
@@ -26,4 +43,6 @@
       </button>
     </div>
   </form>
+
+  {{ f.controls["name"].errors | json }}
 </main>

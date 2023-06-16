@@ -13,6 +13,13 @@ form {
       border-radius: 0.3em;
       padding: 0.5em 1em;
     }
+
+    .error {
+      display: flex;
+      justify-content: start;
+      height: 2em;
+      font-weight: bold;
+    }
   }
 
   .error {

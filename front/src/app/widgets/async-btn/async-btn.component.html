@@ -1,0 +1,6 @@
+<button [title]="label" (click)="run()" [disabled]="isRunning">
+  <fa-icon
+    [icon]="isRunning ? faCircleNotch : icon"
+    [spin]="isRunning"
+  ></fa-icon>
+</button>

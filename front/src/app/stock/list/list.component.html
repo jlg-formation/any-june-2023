@@ -5,23 +5,24 @@
       <span *ngIf="errorMsg">Erreur: {{ errorMsg }}</span>
     </div>
     <nav>
-      <button title="Rafraîchir" (click)="refresh()" [disabled]="isRefreshing">
-        <fa-icon [icon]="faRotateRight" [spin]="isRefreshing"></fa-icon>
-      </button>
+      <app-async-btn
+        [icon]="faRotateRight"
+        label="Rafraîchir"
+        [action]="refresh()"
+        (xxStart)="resetErrorMsg()"
+        (xxError)="setErrorMsg($event)"
+      ></app-async-btn>
       <a routerLink="create" class="button" title="Ajouter">
         <fa-icon [icon]="faPlus"></fa-icon>
       </a>
-      <button
-        title="Supprimer"
-        [hidden]="selectedArticles.size === 0"
-        (click)="remove()"
-        [disabled]="isRemoving"
-      >
-        <fa-icon
-          [icon]="isRemoving ? faCircleNotch : faTrashAlt"
-          [spin]="isRemoving"
-        ></fa-icon>
-      </button>
+
+      <app-async-btn
+        [icon]="faTrashAlt"
+        label="Supprimer"
+        [action]="remove()"
+        (xxStart)="resetErrorMsg()"
+        (xxError)="setErrorMsg($event)"
+      ></app-async-btn>
     </nav>
     <table>
       <thead>

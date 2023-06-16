@@ -5,7 +5,7 @@ import {
   faRotateRight,
   faTrashAlt,
 } from '@fortawesome/free-solid-svg-icons';
-import { catchError, finalize, of, switchMap, tap } from 'rxjs';
+import { catchError, of, switchMap, tap } from 'rxjs';
 import { Article } from 'src/app/interfaces/article';
 import { ArticleService } from 'src/app/services/article.service';
 
@@ -19,7 +19,6 @@ export class ListComponent implements OnInit {
   faPlus = faPlus;
   faRotateRight = faRotateRight;
   faTrashAlt = faTrashAlt;
-  isRefreshing = false;
   selectedArticles = new Set<Article>();
   isRemoving = false;
   errorMsg = '';
@@ -39,49 +38,32 @@ export class ListComponent implements OnInit {
   }
 
   refresh() {
-    of(undefined)
-      .pipe(
-        switchMap(() => {
-          this.errorMsg = '';
-          this.isRefreshing = true;
-          return this.articleService.load();
-        }),
-        catchError((err) => {
-          console.log('err: ', err);
-          return of(undefined);
-        }),
-        finalize(() => {
-          this.isRefreshing = false;
-        })
-      )
-      .subscribe();
+    return of(undefined).pipe(
+      switchMap(() => {
+        this.errorMsg = '';
+
+        return this.articleService.load();
+      }),
+      catchError((err) => {
+        console.log('err: ', err);
+        return of(undefined);
+      })
+    );
   }
 
   remove() {
-    of(undefined)
-      .pipe(
-        switchMap(() => {
-          this.errorMsg = '';
-          this.isRemoving = true;
-          const ids = [...this.selectedArticles].map((a) => a.id);
-          return this.articleService.remove(ids);
-        }),
-        switchMap(() => {
-          return this.articleService.load();
-        }),
-        tap(() => {
-          this.selectedArticles.clear();
-        }),
-        catchError((err) => {
-          console.log('err: ', err);
-          this.errorMsg = 'Cannot suppress';
-          return of(undefined);
-        }),
-        finalize(() => {
-          this.isRemoving = false;
-        })
-      )
-      .subscribe();
+    return of(undefined).pipe(
+      switchMap(() => {
+        const ids = [...this.selectedArticles].map((a) => a.id);
+        return this.articleService.remove(ids);
+      }),
+      switchMap(() => {
+        return this.articleService.load();
+      }),
+      tap(() => {
+        this.selectedArticles.clear();
+      })
+    );
   }
 
   select(a: Article) {
@@ -90,5 +72,13 @@ export class ListComponent implements OnInit {
       return;
     }
     this.selectedArticles.add(a);
+  }
+
+  resetErrorMsg() {
+    this.errorMsg = '';
+  }
+
+  setErrorMsg(err: Error) {
+    this.errorMsg = err.message;
   }
 }
